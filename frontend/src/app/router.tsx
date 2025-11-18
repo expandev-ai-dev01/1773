@@ -1,33 +1,46 @@
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom';
 import { lazy, Suspense } from 'react';
-import { RootLayout } from '@/pages/layouts/RootLayout';
+import { DashboardLayout } from '@/pages/layouts/DashboardLayout';
 import { LoadingSpinner } from '@/core/components/LoadingSpinner';
 
-const HomePage = lazy(() => import('@/pages/Home'));
+const DashboardPage = lazy(() => import('@/pages/Dashboard'));
+const LibraryPage = lazy(() => import('@/pages/Library'));
 const NotFoundPage = lazy(() => import('@/pages/NotFound'));
 
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <RootLayout />,
+    element: <DashboardLayout />,
     children: [
       {
         index: true,
+        element: <Navigate to="/dashboard" replace />,
+      },
+      {
+        path: 'dashboard',
         element: (
           <Suspense fallback={<LoadingSpinner />}>
-            <HomePage />
+            <DashboardPage />
           </Suspense>
         ),
       },
       {
-        path: '*',
+        path: 'library',
         element: (
           <Suspense fallback={<LoadingSpinner />}>
-            <NotFoundPage />
+            <LibraryPage />
           </Suspense>
         ),
       },
     ],
+  },
+  {
+    path: '*',
+    element: (
+      <Suspense fallback={<LoadingSpinner />}>
+        <NotFoundPage />
+      </Suspense>
+    ),
   },
 ]);
 
